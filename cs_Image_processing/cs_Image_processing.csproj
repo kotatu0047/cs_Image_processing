@@ -63,7 +63,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="lib\RelayCommand.cs" />
-    <Compile Include="Model\MainWindowModel.cs" />
+    <Compile Include="Model\ImageOperator.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
