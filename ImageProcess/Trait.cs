@@ -12,6 +12,11 @@ namespace ImageProcess
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         private static extern bool DeleteObject(IntPtr hObject);
 
+        /// <summary>
+        /// レッド => ブルーと、ブルー => レッドのチャネル変換を行います
+        /// </summary>
+        /// <param name="srcBitmap">変換元画像</param>
+        /// <returns>変換後画像</returns>
         public unsafe static Bitmap ChannelSwap(in Bitmap srcBitmap)
         {
             if (srcBitmap == null) return null;
@@ -24,41 +29,42 @@ namespace ImageProcess
             var rect = new Rectangle(0, 0, srcBitmap.Width, srcBitmap.Height);
 
             // todo try catch and using?
-            // ソース画像をメモリロックし、バイト配列へコピー
             var srcBitCount = Bitmap.GetPixelFormatSize(srcBitmap.PixelFormat);
             var srcAlignment = srcBitCount / 8;
-            var srcLooked = srcBitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-            byte* srcPtr = (byte*)srcLooked.Scan0;
-            //byte[] srcPixels = new byte[Math.Abs(srcLooked.Stride) * srcLooked.Height];
-            //Marshal.Copy(srcLooked.Scan0, srcPixels, 0, srcPixels.Length);
-
-            // 変換後画像をメモリロックし、バイト配列へコピー
             var distBitCount = Bitmap.GetPixelFormatSize(distBitmap.PixelFormat);
             var distAlignment = distBitCount / 8;
-            var distLooked = distBitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-            byte* distPtr = (byte*)distLooked.Scan0;
-            //byte[] distPixels = new byte[Math.Abs(distLooked.Stride) * distLooked.Height];
-            //Marshal.Copy(distLooked.Scan0, distPixels, 0, distPixels.Length);
+            BitmapData srcLooked = null;
+            BitmapData distLooked = null;
 
-            for (int y = 0; y < srcLooked.Height; ++y)
+            try
             {
-                //行の先頭のポインタ
-                byte* srcPtrHead = srcPtr + y * srcLooked.Stride;
-                byte* distPtrHead = distPtr + y * distLooked.Stride;
-
-                for (int x = 0; x < srcLooked.Width; ++x)
+                // 画像をメモリロックし、先頭ポインタを取得
+                srcLooked = srcBitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+                byte* srcPtr = (byte*)srcLooked.Scan0;
+                distLooked = distBitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                byte* distPtr = (byte*)distLooked.Scan0;
+                for (int y = 0; y < srcLooked.Height; ++y)
                 {
-                    distPtrHead[0] = srcPtrHead[2]; //ブルー => レッド
-                    distPtrHead[1] = srcPtrHead[1]; //グリーン => グリーン
-                    distPtrHead[2] = srcPtrHead[0]; //レッド => ブルー
+                    //行の先頭のポインタ
+                    byte* srcPtrHead = srcPtr + y * srcLooked.Stride;
+                    byte* distPtrHead = distPtr + y * distLooked.Stride;
 
-                    srcPtrHead += srcAlignment;
-                    distPtrHead += distAlignment;
+                    for (int x = 0; x < srcLooked.Width; ++x)
+                    {
+                        distPtrHead[0] = srcPtrHead[2]; //ブルー => レッド
+                        distPtrHead[1] = srcPtrHead[1]; //グリーン => グリーン
+                        distPtrHead[2] = srcPtrHead[0]; //レッド => ブルー
+
+                        srcPtrHead += srcAlignment;
+                        distPtrHead += distAlignment;
+                    }
                 }
             }
-
-            srcBitmap.UnlockBits(srcLooked);
-            distBitmap.UnlockBits(distLooked);
+            finally
+            {
+                if (srcLooked != null) srcBitmap.UnlockBits(srcLooked);
+                if (distLooked != null) distBitmap.UnlockBits(distLooked);
+            }
 
             return distBitmap;
         }

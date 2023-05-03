@@ -57,6 +57,7 @@ namespace cs_Image_processing.ViewModel
         public ICommand ReadImageButtonPushed { get; set; }
         /// <summary>
         /// 画像ファイルを読み込み、System.Windows.Media.Imaging.BitmapSource型へ変換し、SrcImageにセットする
+        /// 内部処理に使うために、_bitmapにもSystem.Drawing.Bitmap型でセットする
         /// </summary>
         private void ReadImageButtonPushedCommand()
         {
