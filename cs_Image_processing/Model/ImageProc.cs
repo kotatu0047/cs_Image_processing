@@ -1,26 +1,22 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows;
 
 namespace cs_Image_processing.Model
 {
-    public static class ImageOperator
+    public static class ImageProc
     {
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         private static extern bool DeleteObject(IntPtr hObject);
 
-        public static BitmapSource createBitmapSourceByFilePath(string filePath)
+        public static (BitmapSource src , Bitmap bitmap ) CreateBitmapAndBitmapSourceByFilePath(string filePath)
         {
+            Bitmap bitmap = null;
             BitmapSource srcImage = null;
 
-            if (System.IO.File.Exists(filePath) == false) return null;
-            var bitmap = new Bitmap(filePath);
+            if (System.IO.File.Exists(filePath) == false) return (null , null);
+            bitmap = new System.Drawing.Bitmap(filePath);
             var hBitmap = bitmap.GetHbitmap();
 
             try
@@ -37,7 +33,19 @@ namespace cs_Image_processing.Model
                 DeleteObject(hBitmap);
             }
 
-            return srcImage;
+            return (srcImage , bitmap);
+        }
+
+        public static void ChannelSwap(Bitmap bitmap) {
+            if ( Bitmap.GetPixelFormatSize(bitmap.PixelFormat) <= 8)
+            {
+
+
+            }
+            
+
+        //if (bitmap.Get == null) return;
+        
         }
     }
 }

@@ -29,7 +29,7 @@
         </Grid>
         <Grid Grid.Column="1">
             <StackPanel Orientation="Vertical" Margin="20" >
-                <!--<Button Content="画像読み込み" Command="{Binding ReadImageButtonPushed}" Width="270" Height="77" FontSize="24" />-->
+                <Button Content="変換実行" Command="{Binding ExcuteButtonPushed}" Width="270" Height="77" FontSize="24" />
                 <Border
                 Grid.Column="0"
                 Background="Black"
@@ -37,7 +37,7 @@
                 Height="auto"
                 Margin="10">
                     <Image 
-                    Source="{Binding SrcImage}"
+                    Source="{Binding ConvertedSrcImage}"
                     />
                 </Border>
             </StackPanel>
