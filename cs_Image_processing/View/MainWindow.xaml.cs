@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Runtime.InteropServices;
 using cs_Image_processing.ViewModel;
+using cs_Image_processing.Model;
 
 namespace cs_Image_processing.View
 {
@@ -26,6 +15,30 @@ namespace cs_Image_processing.View
         {
             InitializeComponent();
             this.DataContext = new MainWindowViewModel();
+        }
+
+        /// <summary>
+        /// スライダー操作時のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void sliderValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var slider = (Slider)sender;
+            var viewModel = (MainWindowViewModel)(this.DataContext);
+            viewModel.OnSliderValueChange((int)slider.Value);
+        }
+
+        /// <summary>
+        /// 変換モード選択時のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = (ComboBox)sender;
+            var viewModel = (MainWindowViewModel)(this.DataContext);
+            viewModel.OnConvertModeSelectionChange(((KeyValuePair<ConvertMode , string>)comboBox.SelectedItem).Key);
         }
     }
 }
