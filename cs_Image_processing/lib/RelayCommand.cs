@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace cs_Image_processing.lib
 {
-    //original
-    //https://sourcechord.hatenablog.com/entry/2014/01/13/200039
-
+    //original by https://sourcechord.hatenablog.com/entry/2014/01/13/200039
 
     /// <summary>
     /// その機能を中継することのみを目的とするコマンド
